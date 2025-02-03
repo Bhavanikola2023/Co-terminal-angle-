@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Coterminal Angles Animation with n Option</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    canvas {
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+    }
+    .controls {
+      margin-bottom: 10px;
+    }
+    .info {
+      font-size: 1.2em;
+      margin: 10px 0;
+    }
+    label {
+      display: inline-block;
+      margin: 0 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Coterminal Angles Animation with n Option</h1>
+  <canvas id="angleCanvas" width="400" height="400"></canvas>
+  
+  <div class="controls">
+    <label for="angleSlider">Angle (degrees): <span id="angleDisplay">0</span>°</label>
+    <br>
+    <input type="range" id="angleSlider" min="-720" max="720" value="0" step="1">
+  </div>
+  
+  <div class="controls">
+    <label for="nInput">Choose integer n:</label>
+    <input type="number" id="nInput" value="1" step="1">
+  </div>
+  
+  <div class="info" id="coterminalDisplay">
+    Coterminal Angle (0°–360°): 0°
+  </div>
+  
+  <div class="info" id="angleExpressions">
+    Angle + 360° × n: 0°<br>
+    Angle - 360° × n: 0°
+  </div>
+  
+  <script>
+    // Get references to DOM elements
+    const canvas = document.getElementById('angleCanvas');
+    const ctx = canvas.getContext('2d');
+    const angleSlider = document.getElementById('angleSlider');
+    const angleDisplay = document.getElementById('angleDisplay');
+    const coterminalDisplay = document.getElementById('coterminalDisplay');
+    const nInput = document.getElementById('nInput');
+    const angleExpressions = document.getElementById('angleExpressions');
+
+    // Canvas center and circle radius
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = 150;
+
+    // Helper function to convert degrees to radians.
+    function degToRad(deg) {
+      return deg * (Math.PI / 180);
+    }
+
+    // Draw the static circle and fixed initial side (0° along positive x-axis)
+    function drawCircle() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw the main circle
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.strokeStyle = '#333';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      
+      // Draw the fixed initial side (pointing right)
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(centerX + radius, centerY);
+      ctx.strokeStyle = '#007ACC'; // Blue for fixed ray
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+
+    // Draw the terminal side and the rotation arc based on the given angle (in degrees)
+    function drawTerminalSide(angleDeg) {
+      // Standard math: positive angles rotate counterclockwise.
+      // In canvas, y-coordinates increase downward; subtract sine value.
+      const angleRad = degToRad(angleDeg);
+      const endX = centerX + radius * Math.cos(angleRad);
+      const endY = centerY - radius * Math.sin(angleRad);
+      
+      // Draw the terminal side (movable ray)
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(endX, endY);
+      ctx.strokeStyle = '#D32F2F'; // Red for terminal ray
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      
+      // Draw the rotation arc using a smaller radius (for visual clarity)
+      const arcRadius = radius / 4;
+      ctx.beginPath();
+      // For arc: positive angle -> counterclockwise, negative -> clockwise.
+      // The anticlockwise flag: true means counterclockwise.
+      ctx.arc(centerX, centerY, arcRadius, 0, angleRad, angleDeg < 0);
+      ctx.strokeStyle = '#388E3C'; // Green for the arc
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Mark the terminal point with a small circle
+      ctx.beginPath();
+      ctx.arc(endX, endY, 4, 0, 2 * Math.PI);
+      ctx.fillStyle = '#D32F2F';
+      ctx.fill();
+    }
+
+    // Update the canvas and the angle calculations based on inputs
+    function updateCanvas() {
+      const angleDeg = parseInt(angleSlider.value, 10);
+      const n = parseInt(nInput.value, 10);
+      
+      // Redraw the circle and terminal side
+      drawCircle();
+      drawTerminalSide(angleDeg);
+      
+      // Update displayed angle
+      angleDisplay.textContent = angleDeg;
+      
+      // Calculate the coterminal angle in the range [0, 360)
+      let coterminal = angleDeg % 360;
+      if (coterminal < 0) {
+        coterminal += 360;
+      }
+      coterminalDisplay.textContent = `Coterminal Angle (0°–360°): ${coterminal}°`;
+
+      // Calculate and update the expressions for Angle + 360° × n and Angle - 360° × n.
+      const anglePlus = angleDeg + (360 * n);
+      const angleMinus = angleDeg - (360 * n);
+      angleExpressions.innerHTML = 
+        `Angle + 360° × n: ${angleDeg} + 360×${n} = ${anglePlus}°<br>` +
+        `Angle - 360° × n: ${angleDeg} - 360×${n} = ${angleMinus}°`;
+    }
+
+    // Listen for changes on the slider and the n input
+    angleSlider.addEventListener('input', updateCanvas);
+    nInput.addEventListener('input', updateCanvas);
+
+    // Initial draw
+    updateCanvas();
+  </script>
+</body>
+</html>
