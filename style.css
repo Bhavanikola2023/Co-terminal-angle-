@@ -1,0 +1,60 @@
+/* Apply a basic reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #fafafa;
+  padding: 20px;
+  /* Use flexbox on the body to center the container vertically and horizontally */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;  /* Full viewport height */
+}
+
+.container {
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.canvas-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+canvas {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  display: block;
+}
+
+.controls {
+  margin-bottom: 10px;
+}
+
+.info {
+  font-size: 1.2em;
+  margin: 10px 0;
+}
+
+label {
+  display: inline-block;
+  margin: 0 5px;
+}
+
+input[type="number"] {
+  width: 70px;
+  text-align: center;
+}
